@@ -101,31 +101,29 @@ public class laba2_zadanie1 {
 2. Вычисление суммы геометрической прогрессии:
    - Результат = 0
    - Для i от 0 до N-1:
-     - Добавить 3^i к результату.
+     - Добавить digit к результату.
+     - digit *= 3.
 3. Вывод результата.
 
 ### Программа
 ```java
 import java.io.PrintStream;
 import java.util.Scanner;
-
 public class laba2_zadanie2 {
     public static Scanner in = new Scanner(System.in);
     public static PrintStream out = System.out;
-
-    public static void main(String[] args) {
+    public static void main(String[] args){
         // Вводим n с клавиатуры
         int n = in.nextInt();
-        
         // Создаём переменную, в которой будем хранить десятичное значение исходного числа
         int dec_number = 0;
-        
-        for (int i = 0; i < n; i++) {
+        int digit = 1;
+        for (int i = 0; i < n; i++){
             // Переводим каждую цифру троичного числа в десятичную запись и добавляем
-            // это значение в переменную dec_number
-            dec_number += Math.pow(3, i);
+            //                это значение в переменную  dec_number
+            dec_number += digit;
+            digit *= 3;
         }
-        
         out.print(dec_number);
     }
 }
@@ -164,10 +162,40 @@ P0, g, m, Cap
    если `текущее_население` < `Cap`: <br>
       увеличить `счётчик_лет` на 1 <br>
    `текущее_население` += `миграция` <br>
-   если `текущее_население` < 0: <br>
-      `текущее_население` = 0 <br>
-   если `текущее_население` > `Cap`: <br>
-      `текущее_население` = `Cap` <br>
+`текущее_население` = `Cap` <br>
+Вывод: `счётчик лет` и `текущее население`
+**Код:**
+```java
+import java.io.PrintStream;
+import java.util.Scanner;
+public class laba2_zadanie3 {
+    public static Scanner in = new Scanner(System.in);
+    public static PrintStream out = System.out;
+    public static void main(String[] args){
+        // Вводим с клавиатуры вводные данные 
+        int P0 = in.nextInt();
+        int g = in.nextInt();
+        int m = in.nextInt();
+        int Cap = in.nextInt();
+
+        // Создаём переменную P_current, где будем хранить текущую численность населения
+        // (можно было хранить её в P0, но для лучшей читабельности создал лишнюю перемнную)
+        int P_current = P0;
+        // Создаём переменную, где будем хранить текущее количество лет, прошедших с точки отсчёта
+        int number_of_years = 0;
+        while (P_current < Cap){
+            // Применяем формулу, указанную в условии задачи
+            P_current += P_current * g / 100;
+            if (P_current < Cap){
+                number_of_years += 1;
+            }
+            P_current += m;
+        }
+        P_current = Cap;
+        out.print(number_of_years + " " + P_current);
+    }
+}
+```
 **Тесты:** <br>
 Ввод:<br> 1000 5 50 2000 <br>
 Вывод:<br> 8 2000 <br>
@@ -195,60 +223,42 @@ a₁ a₂ ... aₙ
 | **Выходные данные** | Числа или "NO" | — | Элементы, если количество вхождений = значению |
 
 ### Алгоритм
-1. Создаём массив HashMap для хранения пар число - количество его вхождений
+1. Создаём массив для хранения количества вхождений числа
 2. Для каждого из n элементов:
    - Считывается очередное число
-   - Если число встречается впервые → добавляется в HashMap со значением 1
-   - Если число уже есть в HashMap → увеличивается его счетчик на 1
+   - Увеличивается счетчик элемента массива с индексом i + 10 на 1
 3. Перебираются все возможные значения от 10 до 100 включительно
    Для каждого числа проверяется:
-   - Есть ли оно в HashMap (встречалось ли в последовательности)
    - Совпадает ли его частота с самим значением <br> 
 4. Если условие выполняется → число выводится и устанавливается флаг flag = true
 5. Если после цикла flag == false → выводим "NO"
 ### Программа
 ```java
 import java.io.PrintStream;
-import java.util.HashMap;
 import java.util.Scanner;
-
 public class laba2_zadanie4 {
     public static Scanner in = new Scanner(System.in);
     public static PrintStream out = System.out;
-
-    public static void main(String[] args) {
+    public static void main(String[] args){
         // Вводим n с клавиатуры
         int n = in.nextInt();
-        
-        // Создаём переменную current_number для хранения текущего числа
+        // Создаём переменную current_number для хранения текущего числа и 
+        //               вспомогательный boolean flag
         int current_number = 0;
         boolean flag = false;
-        
-        // Создаём HashMap для подсчёта частот
-        HashMap<Integer, Integer> numbers = new HashMap<>();
-
-        for (int i = 0; i < n; i++) {
+        // Создаём массив для хранения числа вхождений чисел
+        int [] numbers = new int[91];
+        for (int i = 0; i < n; i++){
             current_number = in.nextInt();
-            
-            if (!numbers.containsKey(current_number)) {
-                numbers.put(current_number, 1);
-            }
-            else {
-                numbers.replace(current_number, numbers.get(current_number) + 1);
+            numbers[current_number - 10] += 1; 
+        }
+        for (int i = 0; i <= 90; i++){
+            if (numbers[i] == i + 10){
+                out.print((i + 10) + " ");  
+                flag = true;  
             }
         }
-        
-        // Проверяем числа от 10 до 100
-        for (int value = 10; value <= 100; value++) {
-            if (numbers.containsKey(value)) {
-                if (numbers.get(value) == value) {
-                    flag = true;
-                    out.print(value + " ");
-                }
-            }
-        }
-        
-        if (!flag) {
+        if (!flag){
             out.print("NO");
         }
     }
