@@ -8,10 +8,12 @@ public class laba2_zadanie2 {
         int n = in.nextInt();
         // Создаём переменную, в которой будем хранить десятичное значение исходного числа
         int dec_number = 0;
+        int digit = 1;
         for (int i = 0; i < n; i++){
             // Переводим каждую цифру троичного числа в десятичную запись и добавляем
             //                это значение в переменную  dec_number
-            dec_number += Math.pow(3,i);
+            dec_number += digit;
+            digit *= 3;
         }
         out.print(dec_number);
     }
